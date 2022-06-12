@@ -1,16 +1,12 @@
 package com.example.zadanie2;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 public class MainActivity extends AppCompatActivity implements View.OnTouchListener {
@@ -30,9 +26,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Dialog dialog = new Dialog(iv);
+                CustomDialog dialog = new CustomDialog(MainActivity.this);
+                dialog.setParentView(iv);
+                dialog.setDialogView(getLayoutInflater().inflate(R.layout.custom_dialog, null));
+               // dialog.setArrowSize(150,100);
                 //dialog.setDismissOnOutsideTap = false;
-                dialog.show(getSupportFragmentManager(), "dialog");
+                dialog.show();
             }
         });
     }
