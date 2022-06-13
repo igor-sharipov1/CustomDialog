@@ -29,6 +29,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 CustomDialog dialog = new CustomDialog(MainActivity.this);
                 dialog.setParentView(iv);
                 dialog.setDialogView(getLayoutInflater().inflate(R.layout.custom_dialog, null));
+                dialog.setInsideView(getLayoutInflater().inflate(R.layout.inside_dialog_box, null));
+                dialog.setGravity(CustomDialog.FILL);
+                //dialog.setArrowOffset(75,-150);
                // dialog.setArrowSize(150,100);
                 //dialog.setDismissOnOutsideTap = false;
                 dialog.show();
