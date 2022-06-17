@@ -46,7 +46,10 @@ public class CustomDialog extends Dialog implements View.OnTouchListener {
     private int arrowX, arrowY;
     private int  arrowWidth = 65, arrowHeight = 65;
     private View insideView;
-
+    double spaceLeft ;
+    double spaceRight ;
+    double spaceTop ;
+    double spaceBottom ;
     final public static int FILL = 0;
     final public static int VERTICAL = 1;
     final public static int HORIZONTAL = 2;
@@ -156,12 +159,10 @@ public class CustomDialog extends Dialog implements View.OnTouchListener {
         double screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels - (arrowY+arrowHeight);
         double screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels - (arrowX+arrowWidth);
 
-        double spaceLeft = (parentX - marginX) ;
-
-        double spaceRight = (screenWidth - parentX - parentWidth - marginX)  ;
-
-        double spaceTop = (parentY - marginY) ;
-        double spaceBottom = (screenHeight - parentY - parentHeight - marginY) ;
+        spaceLeft = (parentX - marginX) ;
+        spaceRight = (screenWidth - parentX - parentWidth - marginX)  ;
+        spaceTop = (parentY - marginY) ;
+        spaceBottom = (screenHeight - parentY - parentHeight - marginY) ;
 
         double[] arrayScales = {spaceBottom, spaceLeft, spaceRight, spaceTop};
 
@@ -181,8 +182,8 @@ public class CustomDialog extends Dialog implements View.OnTouchListener {
         arrowX = parentX + this.parentWidth / 2 - arrowWidth / 2;
         arrowY = parentY + this.parentHeight;
 
-        int screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
-        if (screenHeight < parentY*2){
+        //int screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
+        if (spaceBottom < spaceTop){
             setDialogBoxAbove();
         }
         else {
@@ -195,8 +196,8 @@ public class CustomDialog extends Dialog implements View.OnTouchListener {
         arrowX = parentX + this.parentWidth / 2 - arrowWidth / 2;
         arrowY = parentY + this.parentHeight;
 
-        int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
-        if (screenWidth < parentX*2){
+        //int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
+        if (spaceRight < spaceLeft){
             setDialogBoxLeft();
         }
         else {
