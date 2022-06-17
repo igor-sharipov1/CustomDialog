@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class CustomDialog extends Dialog implements View.OnTouchListener {
 
@@ -50,12 +51,10 @@ public class CustomDialog extends Dialog implements View.OnTouchListener {
     final public static int VERTICAL = 1;
     final public static int HORIZONTAL = 2;
 
-    private int arrowOffsetX = 0;
-    private int arrowOffsetY = 0;
+    private int arrowCornerOffset = 0;
 
-    public void setArrowOffset(int x, int y){
-        this.arrowOffsetX = x;
-        this.arrowOffsetY = y;
+    public void setArrowCornerOffset(int offset){
+        this.arrowCornerOffset = offset;
     }
 
     private int gravity = FILL;
@@ -212,11 +211,11 @@ public class CustomDialog extends Dialog implements View.OnTouchListener {
         arrowX = parentX - arrowHeight;
         arrowY = parentY + parentHeight / 2 - arrowHeight / 2;
 
-        setArrowParameters();
-
         dialogBoxX = parentX - dialogBoxWidth - arrowHeight * 20/23;
 
         setDialogVertically();
+
+        setArrowParameters();
 
         insideView.setX(dialogBoxX);
     }
@@ -225,14 +224,17 @@ public class CustomDialog extends Dialog implements View.OnTouchListener {
 
         arrow.animate().rotation(-90f).setDuration(0).start();
 
+
         arrowX = parentX +parentWidth ;
         arrowY = parentY + parentHeight / 2 - arrowWidth / 2;
 
-        setArrowParameters();
-
         dialogBoxX = arrowX + arrowHeight * 20/23;
 
+
         setDialogVertically();
+
+        setArrowParameters();
+
 
         insideView.setX(dialogBoxX);
     }
@@ -242,11 +244,11 @@ public class CustomDialog extends Dialog implements View.OnTouchListener {
         arrowX = parentX + this.parentWidth / 2 - arrowWidth / 2;
         arrowY = parentY + this.parentHeight;
 
-        setArrowParameters();
-
-        dialogBoxY = parentY + parentHeight + arrowHeight* 20/23 ;
+        dialogBoxY = parentY + parentHeight + arrowHeight* 20/23;
 
         setDialogHorizontally();
+
+        setArrowParameters();
 
         insideView.setY(dialogBoxY);
     }
@@ -272,7 +274,22 @@ public class CustomDialog extends Dialog implements View.OnTouchListener {
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
-        lp.setMargins(arrowX+arrowOffsetX, arrowY+arrowOffsetY, 0, 0);
+
+        if (gravity == CustomDialog.VERTICAL){
+            int leftArrowDistance = arrowX - arrowWidth/2 - dialogBoxX;
+            int rightArrowDistance = dialogBoxX + dialogBoxWidth - arrowWidth / 2 - arrowX;
+            if (leftArrowDistance < arrowCornerOffset) lp.setMargins(arrowX + arrowCornerOffset, arrowY, 0, 0);
+            else if (rightArrowDistance < arrowCornerOffset) lp.setMargins(arrowX - arrowCornerOffset, arrowY, 0, 0);
+            else lp.setMargins(arrowX, arrowY, 0, 0);
+        }
+        else {
+            int topArrowDistance = arrowY - arrowWidth/2 - dialogBoxY;
+            int bottomArrowDistance = dialogBoxY + dialogBoxHeight - arrowWidth / 2 - arrowY;
+            if (topArrowDistance < arrowCornerOffset) lp.setMargins(arrowX, arrowY + arrowCornerOffset, 0, 0);
+            else if (bottomArrowDistance < arrowCornerOffset) lp.setMargins(arrowX , arrowY- arrowCornerOffset, 0, 0);
+            else lp.setMargins(arrowX, arrowY, 0, 0);
+        }
+
         arrow.setLayoutParams(lp);
         Bitmap bitmap = getBitmapFromVectorDrawable(getContext(), R.drawable.ic_baseline_arrow_drop_down);
         arrow.setImageBitmap(Bitmap.createScaledBitmap(bitmap, arrowWidth, arrowHeight, false));
@@ -316,6 +333,8 @@ public class CustomDialog extends Dialog implements View.OnTouchListener {
             insideView.setY(dialogBoxY);
         }
     }
+
+
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
