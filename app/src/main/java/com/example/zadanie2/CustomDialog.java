@@ -59,10 +59,6 @@ public class CustomDialog extends Dialog implements View.OnTouchListener {
 
     public void setArrowCornerOffset(int offset){
         this.arrowCornerOffset = offset;
-        if (ll != null) {
-            ll.removeView(insideView);
-            setDialogBox();
-        }
     }
 
     private int gravity = FILL;
@@ -91,8 +87,6 @@ public class CustomDialog extends Dialog implements View.OnTouchListener {
 
     public void setParentView(View parent){
         this.arrow = new ImageView(parent.getContext());
-        Bitmap bitmap = getBitmapFromVectorDrawable(getContext(), R.drawable.ic_baseline_arrow_drop_down);
-        arrow.setImageBitmap(Bitmap.createScaledBitmap(bitmap, arrowWidth, arrowHeight, false));
         this.parentX = (int) parent.getX();
         this.parentY = (int) parent.getY();
         this.parentWidth = parent.getWidth();
@@ -114,6 +108,7 @@ public class CustomDialog extends Dialog implements View.OnTouchListener {
     @Override
     protected void onStart() {
         super.onStart();
+        this.arrow = new ImageView(getContext());
         arrow.setPadding(0,0,0,0);
         arrow.setAdjustViewBounds(true);
         arrow.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
@@ -160,14 +155,15 @@ public class CustomDialog extends Dialog implements View.OnTouchListener {
         }
     }
 
+
     private void selectGravityFill(){
         double screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels - (arrowY+arrowHeight);
         double screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels - (arrowX+arrowWidth);
 
-        spaceLeft = (parentX - marginX) ;
-        spaceRight = (screenWidth - parentX - parentWidth - marginX)  ;
-        spaceTop = (parentY - marginY) ;
-        spaceBottom = (screenHeight - parentY - parentHeight - marginY) ;
+        spaceLeft = (parentX - marginX - dialogBoxWidth - arrowHeight) ;
+        spaceRight = (screenWidth - parentX - parentWidth - marginX - dialogBoxWidth- arrowHeight)  ;
+        spaceTop = (parentY - marginY - arrowHeight - dialogBoxHeight) ;
+        spaceBottom = (screenHeight - parentY - parentHeight - marginY- arrowHeight - dialogBoxHeight) ;
 
         double[] arrayScales = {spaceBottom, spaceLeft, spaceRight, spaceTop};
 
@@ -184,6 +180,9 @@ public class CustomDialog extends Dialog implements View.OnTouchListener {
 
     private void selectGravityVertical(){
 
+        Bitmap bitmap = getBitmapFromVectorDrawable(getContext(), R.drawable.ic_baseline_arrow_drop_down);
+        arrow.setImageBitmap(Bitmap.createScaledBitmap(bitmap, arrowWidth, arrowHeight, false));
+
         arrowX = parentX + this.parentWidth / 2 - arrowWidth / 2;
         arrowY = parentY + this.parentHeight;
 
@@ -197,6 +196,13 @@ public class CustomDialog extends Dialog implements View.OnTouchListener {
     }
 
     private void selectGravityHorizontal(){
+
+        int swapHeightToWidth = arrowHeight;
+        arrowHeight = arrowWidth;
+        arrowWidth = swapHeightToWidth;
+
+        Bitmap bitmap = getBitmapFromVectorDrawable(getContext(), R.drawable.ic_baseline_arrow_drop_down_horizontal);
+        arrow.setImageBitmap(Bitmap.createScaledBitmap(bitmap, arrowWidth, arrowHeight, false));
 
         arrowX = parentX + this.parentWidth / 2 - arrowWidth / 2;
         arrowY = parentY + this.parentHeight;
@@ -212,12 +218,11 @@ public class CustomDialog extends Dialog implements View.OnTouchListener {
 
     private  void setDialogBoxLeft(){
 
-        arrow.animate().rotation(90f).setDuration(0).start();
 
-        arrowX = parentX - arrowHeight;
+        arrowX = parentX - arrowWidth;
         arrowY = parentY + parentHeight / 2 - arrowHeight / 2;
 
-        dialogBoxX = parentX - dialogBoxWidth - arrowHeight * 20/23;
+        dialogBoxX = parentX - dialogBoxWidth - arrowWidth* 20/23 ;
 
         setDialogVertically();
 
@@ -227,20 +232,16 @@ public class CustomDialog extends Dialog implements View.OnTouchListener {
     }
 
     private  void setDialogBoxRight(){
+        arrow.animate().rotation(180f).setDuration(0).start();
 
-        arrow.animate().rotation(-90f).setDuration(0).start();
+        arrowX = parentX + parentWidth;
+        arrowY = parentY + parentHeight / 2 - arrowHeight / 2;
 
-
-        arrowX = parentX +parentWidth ;
-        arrowY = parentY + parentHeight / 2 - arrowWidth / 2;
-
-        dialogBoxX = arrowX + arrowHeight * 20/23;
-
+        dialogBoxX = parentX + parentWidth + arrowWidth * 20/23;
 
         setDialogVertically();
 
         setArrowParameters();
-
 
         insideView.setX(dialogBoxX);
     }
@@ -282,23 +283,21 @@ public class CustomDialog extends Dialog implements View.OnTouchListener {
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
 
         if (gravity == CustomDialog.VERTICAL){
-            int leftArrowDistance = arrowX - arrowWidth/2 - dialogBoxX;
-            int rightArrowDistance = dialogBoxX + dialogBoxWidth - arrowWidth / 2 - arrowX;
+            int leftArrowDistance = arrowX  - dialogBoxX;
+            int rightArrowDistance = dialogBoxX + dialogBoxWidth - arrowWidth - arrowX;
             if (leftArrowDistance < arrowCornerOffset) lp.setMargins(arrowX + arrowCornerOffset, arrowY, 0, 0);
             else if (rightArrowDistance < arrowCornerOffset) lp.setMargins(arrowX - arrowCornerOffset, arrowY, 0, 0);
             else lp.setMargins(arrowX, arrowY, 0, 0);
         }
         else {
-            int topArrowDistance = arrowY - arrowWidth/2 - dialogBoxY;
-            int bottomArrowDistance = dialogBoxY + dialogBoxHeight - arrowWidth / 2 - arrowY;
+            int topArrowDistance = arrowY - dialogBoxY;
+            int bottomArrowDistance = dialogBoxY + dialogBoxHeight - arrowHeight - arrowY;
             if (topArrowDistance < arrowCornerOffset) lp.setMargins(arrowX, arrowY + arrowCornerOffset, 0, 0);
             else if (bottomArrowDistance < arrowCornerOffset) lp.setMargins(arrowX , arrowY- arrowCornerOffset, 0, 0);
             else lp.setMargins(arrowX, arrowY, 0, 0);
         }
 
         arrow.setLayoutParams(lp);
-        Bitmap bitmap = getBitmapFromVectorDrawable(getContext(), R.drawable.ic_baseline_arrow_drop_down);
-        arrow.setImageBitmap(Bitmap.createScaledBitmap(bitmap, arrowWidth, arrowHeight, false));
         ((ViewGroup) v).addView(arrow);
     }
 
