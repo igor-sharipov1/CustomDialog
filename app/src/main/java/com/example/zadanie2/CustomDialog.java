@@ -41,6 +41,7 @@ public class CustomDialog extends Dialog implements View.OnTouchListener {
     private int parentWidth, parentHeight;
     private ImageView arrow;
     private View v;
+    private LinearLayout ll;
     private int dialogBoxHeight, dialogBoxWidth;
     private int dialogBoxY, dialogBoxX;
     private int arrowX, arrowY;
@@ -58,6 +59,10 @@ public class CustomDialog extends Dialog implements View.OnTouchListener {
 
     public void setArrowCornerOffset(int offset){
         this.arrowCornerOffset = offset;
+        if (ll != null) {
+            ll.removeView(insideView);
+            setDialogBox();
+        }
     }
 
     private int gravity = FILL;
@@ -125,7 +130,7 @@ public class CustomDialog extends Dialog implements View.OnTouchListener {
         wmlp.x = 0 ;   //x position
         wmlp.y = 0 ;
 
-        getCardView();
+        getLinearLayout();
         insideView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -364,9 +369,9 @@ public class CustomDialog extends Dialog implements View.OnTouchListener {
     }
 
 
-    private void getCardView(){
+    private void getLinearLayout(){
         for(int index = 0; index < ((ViewGroup) v).getChildCount(); index++) {
-            LinearLayout ll = (LinearLayout) ((ViewGroup) v).getChildAt(index);
+            ll = (LinearLayout) ((ViewGroup) v).getChildAt(index);
             ((ViewGroup) ll).addView(insideView);
         }
     }
