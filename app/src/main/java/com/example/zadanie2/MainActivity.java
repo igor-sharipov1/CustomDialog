@@ -30,9 +30,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 dialog.setParentView(iv);
                 dialog.setDialogView(getLayoutInflater().inflate(R.layout.custom_dialog, null));
                 dialog.setInsideView(getLayoutInflater().inflate(R.layout.inside_dialog_box, null));
-                dialog.setGravity(CustomDialog.FILL);
                 dialog.setArrowCornerOffset(100);
-                dialog.setArrowSize(75,75);
+                dialog.setArrowSize(175,75);
+                dialog.setGravity(CustomDialog.FILL);
                 //dialog.setDismissOnOutsideTap = false;
                 dialog.show();
             }
