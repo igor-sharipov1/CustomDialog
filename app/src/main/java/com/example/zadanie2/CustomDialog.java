@@ -298,14 +298,11 @@ public class CustomDialog extends Dialog implements View.OnTouchListener {
             int topArrowDistance = arrowY - dialogBoxY;
             int bottomArrowDistance = dialogBoxY + dialogBoxHeight - arrowWidth - arrowY;
             if (topArrowDistance < arrowCornerOffset){
-                int a = dialogBoxY  + arrowCornerOffset + rotateArrowSlip;
-                lp.setMargins(arrowX, dialogBoxY  + arrowCornerOffset , 0, 0);
+                lp.setMargins(arrowX, dialogBoxY  + arrowCornerOffset + rotateArrowSlip / 2, 0, 0);
             }
 
             else if (bottomArrowDistance < arrowCornerOffset){
-                int b = dialogBoxY + dialogBoxHeight - arrowCornerOffset;
-                int q = dialogBoxY + dialogBoxHeight - arrowCornerOffset - arrowWidth / 2;
-                lp.setMargins(arrowX, dialogBoxY + dialogBoxHeight - arrowCornerOffset - arrowWidth + rotateArrowSlip , 0, 0);
+                lp.setMargins(arrowX, dialogBoxY + dialogBoxHeight - arrowCornerOffset - arrowWidth + rotateArrowSlip / 2 , 0, 0);
             }
 
             else lp.setMargins(arrowX, arrowY, 0, 0);
