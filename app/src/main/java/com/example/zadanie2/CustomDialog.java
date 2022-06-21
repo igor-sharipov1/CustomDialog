@@ -40,6 +40,7 @@ public class CustomDialog extends Dialog implements View.OnTouchListener {
     private double spaceRight ;
     private double spaceTop ;
     private double spaceBottom ;
+    int endOfScreen;
     final public static int FILL = 0;
     final public static int VERTICAL = 1;
     final public static int HORIZONTAL = 2;
@@ -215,7 +216,6 @@ public class CustomDialog extends Dialog implements View.OnTouchListener {
 
     private  void setDialogBoxLeft(){
 
-
         arrow.animate().rotation(90f).setDuration(0).start();
 
         arrowX = parentX - arrowHeight+ (arrowHeight - arrowWidth) / 2;
@@ -231,7 +231,6 @@ public class CustomDialog extends Dialog implements View.OnTouchListener {
     }
 
     private  void setDialogBoxRight(){
-
 
 
         arrow.animate().rotation(-90f).setDuration(0).start();
@@ -288,15 +287,27 @@ public class CustomDialog extends Dialog implements View.OnTouchListener {
         if (gravity == CustomDialog.VERTICAL || gravity == CustomDialog.TOP || gravity == CustomDialog.BOTTOM){
             int leftArrowDistance = arrowX  - dialogBoxX;
             int rightArrowDistance = dialogBoxX + dialogBoxWidth - arrowWidth - arrowX;
-            if (leftArrowDistance < arrowCornerOffset) lp.setMargins(arrowX + arrowCornerOffset, arrowY, 0, 0);
-            else if (rightArrowDistance < arrowCornerOffset) lp.setMargins(arrowX - arrowCornerOffset, arrowY, 0, 0);
+            if (leftArrowDistance < arrowCornerOffset)
+                lp.setMargins(dialogBoxX + arrowCornerOffset, arrowY, 0, 0);
+            else if (rightArrowDistance < arrowCornerOffset)
+                lp.setMargins(dialogBoxX + dialogBoxWidth - arrowCornerOffset - arrowWidth, arrowY, 0, 0);
             else lp.setMargins(arrowX, arrowY, 0, 0);
         }
         else {
+            int rotateArrowSlip = arrowWidth - arrowHeight;
             int topArrowDistance = arrowY - dialogBoxY;
-            int bottomArrowDistance = dialogBoxY + dialogBoxHeight - arrowHeight - arrowY;
-            if (topArrowDistance < arrowCornerOffset) lp.setMargins(arrowX, arrowY + arrowCornerOffset, 0, 0);
-            else if (bottomArrowDistance < arrowCornerOffset) lp.setMargins(arrowX , arrowY- arrowCornerOffset, 0, 0);
+            int bottomArrowDistance = dialogBoxY + dialogBoxHeight - arrowWidth - arrowY;
+            if (topArrowDistance < arrowCornerOffset){
+                int a = dialogBoxY  + arrowCornerOffset + rotateArrowSlip;
+                lp.setMargins(arrowX, dialogBoxY  + arrowCornerOffset , 0, 0);
+            }
+
+            else if (bottomArrowDistance < arrowCornerOffset){
+                int b = dialogBoxY + dialogBoxHeight - arrowCornerOffset;
+                int q = dialogBoxY + dialogBoxHeight - arrowCornerOffset - arrowWidth / 2;
+                lp.setMargins(arrowX, dialogBoxY + dialogBoxHeight - arrowCornerOffset - arrowWidth + rotateArrowSlip , 0, 0);
+            }
+
             else lp.setMargins(arrowX, arrowY, 0, 0);
         }
 
@@ -312,12 +323,12 @@ public class CustomDialog extends Dialog implements View.OnTouchListener {
         int marginX = 15;
 
         if(parentX - dialogBoxWidth/2 < 0){
-            dialogBoxX = 0;
-            insideView.setX(dialogBoxX+marginX);
+            dialogBoxX = marginX;
+            insideView.setX(dialogBoxX);
         }
         else if(parentX + dialogBoxWidth/3*2 > endOfScreen){
-            dialogBoxX = endOfScreen - dialogBoxWidth;
-            insideView.setX(dialogBoxX-marginX);
+            dialogBoxX = endOfScreen - dialogBoxWidth - marginX;
+            insideView.setX(dialogBoxX);
         }
         else{
             dialogBoxX = arrowX - dialogBoxWidth/2 + arrowWidth/2;
@@ -326,15 +337,15 @@ public class CustomDialog extends Dialog implements View.OnTouchListener {
     }
 
     private void setDialogVertically(){
-        int endOfScreen = Resources.getSystem().getDisplayMetrics().heightPixels;
+        endOfScreen = Resources.getSystem().getDisplayMetrics().heightPixels;
 
 
         if(parentY - dialogBoxHeight/2 < 0){
-            dialogBoxY = 0;
-            insideView.setY(dialogBoxY+marginY);
+            dialogBoxY = marginY;
+            insideView.setY(dialogBoxY);
         }
         else if(parentY + dialogBoxHeight > endOfScreen){
-            dialogBoxY = endOfScreen - dialogBoxHeight - 3*marginY;
+            dialogBoxY = endOfScreen - dialogBoxHeight - 2*marginY;
             insideView.setY(dialogBoxY);
         }
         else{
